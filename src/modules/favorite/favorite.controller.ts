@@ -55,7 +55,7 @@ export default class FavoriteController extends Controller {
   public async create(req: Request, res: Response,): Promise<void> {
     await this.favoriteService.create({ film: req.params.id, user: req.user.id });
     const result = await this.filmService.show(req.params.id);
-    this.ok(res, fillDTO(FilmResponse, { ...result, isFavorite: true }));
+    this.ok(res, { ...fillDTO(FilmResponse, result), isFavorite: true });
   }
 
   public async delete(req: Request, res: Response): Promise<void> {
@@ -66,6 +66,6 @@ export default class FavoriteController extends Controller {
 
   public async index(req: Request, res: Response): Promise<void> {
     const result = await this.favoriteService.index(req.user.id);
-    this.ok(res, result.map((value) => fillDTO(FilmResponse, { ...value.film, isFavorite: true })));
+    this.ok(res, result.map((value) => ({ ...fillDTO(FilmResponse, value.film), isFavorite: true })));
   }
 }

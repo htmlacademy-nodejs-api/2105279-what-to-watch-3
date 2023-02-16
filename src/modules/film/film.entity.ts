@@ -92,13 +92,13 @@ export class FilmEntity extends defaultClasses.TimeStamps {
 
   @prop({
     required: true,
-    default: ''
+    default: ' '
   })
   public posterImage!: string;
 
   @prop({
     required: true,
-    default: ''
+    default: ' '
   })
   public backgroundImage!: string;
 

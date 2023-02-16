@@ -1,7 +1,7 @@
 import { User } from '../../types/user.type.js';
 import typegoose, { getModelForClass, defaultClasses } from '@typegoose/typegoose';
 import { createSHA256 } from '../../utils/common.js';
-import { UserOption } from './user.constant.js';
+import { DEFAULT_AVATAR_FILE_NAME, UserOption } from './user.constant.js';
 
 const { prop, modelOptions } = typegoose;
 
@@ -29,8 +29,7 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
   public email!: string;
 
   @prop({
-    default: '',
-    match: [/\.(?:jpg||png)$|^$/, 'png or jpg format only']
+    default: DEFAULT_AVATAR_FILE_NAME
   })
   public avatarPath!: string;
 

@@ -91,7 +91,7 @@ export default class FilmController extends Controller {
       handler: this.uploadBackgroundImage,
       middlewares: [
         new PrivateRouteMiddleware(),
-        new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'background'),
+        new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'background', ['jpg']),
       ]
     });
     this.addRoute({
@@ -100,7 +100,7 @@ export default class FilmController extends Controller {
       handler: this.uploadPosterImage,
       middlewares: [
         new PrivateRouteMiddleware(),
-        new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'poster'),
+        new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'poster', ['jpg']),
       ]
     });
   }
@@ -127,7 +127,7 @@ export default class FilmController extends Controller {
     const { body, user } = req;
     const film = await this.filmService.show(req.params.id);
 
-    if (film?.user?.toString() === user.id) {
+    if (film?.user?.id.toString() === user.id) {
       const result = await this.filmService.update(req.params.id, body);
       await this.addFavoriteField(result, user.id);
       this.send(
@@ -135,6 +135,7 @@ export default class FilmController extends Controller {
         StatusCodes.CREATED,
         fillDTO(FilmDetailResponse, result)
       );
+      return;
     }
 
     throw new HttpError(
@@ -149,7 +150,7 @@ export default class FilmController extends Controller {
     const { user } = req;
     const film = await this.filmService.show(filmId);
 
-    if (film?.user?.toString() === user.id) {
+    if (film?.user?.id.toString() === user.id) {
       await this.commentService.delete(filmId);
       await this.favoriteService.deleteAll(filmId);
       const result = await this.filmService.delete(filmId);
@@ -158,6 +159,7 @@ export default class FilmController extends Controller {
         StatusCodes.OK,
         fillDTO(FilmResponse, result)
       );
+      return;
     }
 
     throw new HttpError(
@@ -184,7 +186,9 @@ export default class FilmController extends Controller {
 
   public async show(req: Request, res: Response): Promise<void> {
     const result = await this.filmService.show(req.params.id);
-    await this.addFavoriteField(result, req.user.id);
+    if (req.user) {
+      await this.addFavoriteField(result, req.user.id);
+    }
     this.send(
       res,
       StatusCodes.OK,
@@ -194,7 +198,9 @@ export default class FilmController extends Controller {
 
   public async promo(req: Request, res: Response): Promise<void> {
     const result = await this.filmService.promo();
-    await this.addFavoriteField(result, req.user.id);
+    if (req.user) {
+      await this.addFavoriteField(result, req.user.id);
+    }
     this.send(
       res,
       StatusCodes.OK,

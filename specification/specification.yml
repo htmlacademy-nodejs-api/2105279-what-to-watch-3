@@ -76,12 +76,12 @@ paths:
       summary: Проверка состояния пользователя.
       description: Возвращает информацию по авторизованному пользователю.
       parameters:
-        - name: X-Token
+        - name: Authorization
           in: header
           description: Авторизационный токен пользователя
           required: true
           schema:
-            $ref: "#/components/schemas/x-token"
+            $ref: "#/components/schemas/Authorization"
 
       responses:
         "200":
@@ -94,27 +94,6 @@ paths:
         "401":
           description: Пользователь не авторизован
 
-  /users/logout:
-    delete:
-      tags:
-        - users
-      summary: Завершает сессию пользователя.
-      description: Выход из закрытой части приложения.
-      parameters:
-        - name: X-Token
-          in: header
-          description: Авторизационный токен пользователя
-          required: true
-          schema:
-            $ref: "#/components/schemas/x-token"
-
-      responses:
-        "204":
-          description: Сеанс завершён
-
-        "403":
-          description: Выход не выполнен
-
   /users/avatar:
     post:
       tags:
@@ -122,14 +101,14 @@ paths:
       summary: Загружает аватарку пользователя.
       description: Загружает изображение (аватар) пользователя на сервер.
       parameters:
-        - name: X-Token
+        - name: Authorization
           in: header
           description: Авторизационный токен пользователя
           required: true
           schema:
-            $ref: "#/components/schemas/x-token"
+            $ref: "#/components/schemas/Authorization"
 
-      requestBody:
+      avatar:
         description: Изображение.
         content:
           multipart/form-data:
@@ -141,8 +120,11 @@ paths:
         "201":
           description: Изображение успешно загружено
 
-        "403":
-          description: Выход не выполнен
+        "400":
+          description: Не верный формат файла
+
+        "401":
+          description: Пользователь не авторизован
 
   /films/promo:
     get:
@@ -186,12 +168,12 @@ paths:
       summary: Добавить новый фильм.
       description: Добавляет новый фильм в базу.
       parameters:
-        - name: X-Token
+        - name: Authorization
           in: header
           description: Авторизационный токен пользователя
           required: true
           schema:
-            $ref: "#/components/schemas/x-token"
+            $ref: "#/components/schemas/Authorization"
 
       requestBody:
         description: Информация о фильме.
@@ -248,12 +230,12 @@ paths:
       summary: Редактировать информацию о фильме.
       description: Редактировать информацию о фильме.
       parameters:
-        - name: X-Token
+        - name: Authorization
           in: header
           description: Авторизационный токен пользователя
           required: true
           schema:
-            $ref: "#/components/schemas/x-token"
+            $ref: "#/components/schemas/Authorization"
 
       requestBody:
         description: Информация о фильме.
@@ -284,12 +266,12 @@ paths:
       summary: Удалить фильм с сервера.
       description: Удаляет фильм из базы данных.
       parameters:
-        - name: X-Token
+        - name: Authorization
           in: header
           description: Авторизационный токен пользователя
           required: true
           schema:
-            $ref: "#/components/schemas/x-token"
+            $ref: "#/components/schemas/Authorization"
 
       responses:
         "200":
@@ -336,12 +318,12 @@ paths:
       summary: Получить список фильмов к просмотру.
       description: Возвращает массив фильмов. Каждый фильм описан в виде объекта.
       parameters:
-        - name: X-Token
+        - name: Authorization
           in: header
           description: Авторизационный токен пользователя
           required: true
           schema:
-            $ref: "#/components/schemas/x-token"
+            $ref: "#/components/schemas/Authorization"
 
       responses:
         "200":
@@ -355,6 +337,9 @@ paths:
                   allOf:
                     - $ref: "#/components/schemas/film"
                     - type: object
+
+        "401":
+          description: Пользователь не авторизован
 
   /favorite/{id}/{status}:
     post:
@@ -377,7 +362,7 @@ paths:
           schema:
             type: number
             example: 1
-        - name: X-Token
+        - name: Authorization
           in: header
           description: Авторизационный токен пользователя
           required: true
@@ -430,7 +415,7 @@ paths:
       summary: Добавить новый комментарий
       description: Добавляет новый комментарий для фильма с идентификатором `id`.
       parameters:
-        - name: X-Token
+        - name: Authorization
           in: header
           description: Авторизационный токен пользователя
           required: true
@@ -467,6 +452,70 @@ paths:
         "401":
           description: Пользователь не авторизован
 
+  /films/:id/background:
+    post:
+      tags:
+        - films
+      summary: Загружает аватарку пользователя.
+      description: Загружает изображение (аватар) пользователя на сервер.
+      parameters:
+        - name: Authorization
+          in: header
+          description: Авторизационный токен пользователя
+          required: true
+          schema:
+            $ref: "#/components/schemas/Authorization"
+
+      background:
+        description: Изображение.
+        content:
+          multipart/form-data:
+            name: string
+            filename: sting
+        required: true
+
+      responses:
+        "201":
+          description: Изображение успешно загружено
+
+        "400":
+          description: Не верный формат файла
+
+        "401":
+          description: Пользователь не авторизован
+
+  /films/:id/poster:
+    post:
+      tags:
+        - films
+      summary: Загружает аватарку пользователя.
+      description: Загружает изображение (аватар) пользователя на сервер.
+      parameters:
+        - name: Authorization
+          in: header
+          description: Авторизационный токен пользователя
+          required: true
+          schema:
+            $ref: "#/components/schemas/Authorization"
+
+      poster:
+        description: Изображение.
+        content:
+          multipart/form-data:
+            name: string
+            filename: sting
+        required: true
+
+      responses:
+        "201":
+          description: Изображение успешно загружено
+
+        "400":
+          description: Не верный формат файла
+
+        "401":
+          description: Пользователь не авторизован
+
 components:
   schemas:
     createUser:
@@ -475,10 +524,6 @@ components:
         email:
           type: string
           example: creamy@htmlacademy.ru
-
-        avatarPath:
-          type: string
-          example: /avatar/534545.jpg
 
         name:
           type: string
@@ -521,9 +566,21 @@ components:
           type: string
           example: 6329c3d6a04ab1061c6425ea
 
-    x-token:
+        email:
+          type: string
+          example: creamy@htmlacademy.ru
+
+        avatarPath:
+          type: string
+          example: /avatar/534545.jpg
+
+        name:
+          type: string
+          example: Creamy
+
+    Authorization:
       type: string
-      example: 6329c3d6a04ab1061c6425ea
+      example: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3Q0QHRlc3QubmV0IiwiaWQiOiI2M2U0Yzc4ODFhNzE4N2I0ZWMwYmQzMGMiLCJpYXQiOjE2NzYzNTUyOTMsImV4cCI6MTY3NjUyODA5M30.NVirv4ZYJUnt5T6KUvWSILA_E-zQCs8voIM1xBP5UFY
 
     film:
       type: object

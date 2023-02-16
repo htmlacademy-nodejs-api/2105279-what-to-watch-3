@@ -1,6 +1,6 @@
 
 import { Genre } from '../../../types/genre.type.js';
-import { IsArray, IsDateString, IsEnum, IsHexColor, IsInt, IsString, IsUrl, MaxLength, MinLength } from 'class-validator';
+import { IsArray, IsEnum, IsHexColor, IsInt, IsString, IsUrl, MaxLength, MinLength } from 'class-validator';
 import { FilmOption } from '../film.constant.js';
 
 export default class UpdateFilmDto {
@@ -11,9 +11,6 @@ export default class UpdateFilmDto {
   @MinLength(FilmOption.MinLengthDescription, { message: `Minimum description length must be ${FilmOption.MinLengthDescription}` })
   @MaxLength(FilmOption.MaxLengthDescription, { message: `Maximum description length must be ${FilmOption.MaxLengthDescription}` })
   public description?: string;
-
-  @IsDateString({}, { message: 'postDate must be valid ISO date' })
-  public publicationDate?: Date;
 
   @IsEnum(Genre, { message: `type must be ${Object.values(Genre).join(', ')}` })
   public genre?: Genre;
@@ -38,10 +35,8 @@ export default class UpdateFilmDto {
   @IsInt({ message: 'Runtime must be integer' })
   public runTime?: number;
 
-  @IsUrl({}, { message: 'Released must be URL' })
   public posterImage?: string;
 
-  @IsUrl({}, { message: 'Released must be URL' })
   public backgroundImage?: string;
 
   @IsHexColor({ message: 'Color must be hex format' })

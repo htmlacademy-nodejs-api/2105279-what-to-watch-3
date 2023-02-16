@@ -3,6 +3,9 @@ import UserResponse from '../../user/response/user.response.js';
 
 export default class FilmDetailResponse {
   @Expose()
+  public id!: string;
+
+  @Expose()
   public name!: string;
 
   @Expose()

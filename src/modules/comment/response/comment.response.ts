@@ -3,6 +3,9 @@ import UserResponse from '../../user/response/user.response.js';
 
 export default class CommentResponse {
   @Expose()
+  public id!: string;
+
+  @Expose()
   public text!: string;
 
   @Expose()
